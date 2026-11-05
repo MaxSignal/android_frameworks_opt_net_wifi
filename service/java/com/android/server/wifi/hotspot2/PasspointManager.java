@@ -762,6 +762,12 @@ public class PasspointManager {
             ScanResult scanResult) {
         List<Pair<PasspointProvider, PasspointMatch>> allMatches = new ArrayList<>();
 
+        // no provider can match: skip the ANQP query (an off-channel action
+        // frame per Hotspot 2.0 AP after every scan; bcmdhd on BCM4329 cannot send it)
+        if (mProviders.isEmpty()) {
+            return allMatches;
+        }
+
         // Retrieve the relevant information elements, mainly Roaming Consortium IE and Hotspot 2.0
         // Vendor Specific IE.
         InformationElementUtil.RoamingConsortium roamingConsortium =
